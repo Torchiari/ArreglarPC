@@ -9,6 +9,13 @@ class Artefacto:
         data = cursor.fetchall()
         conn.close()
         return data
+    @staticmethod
+    def obtener_por_id(id_artefacto):
+        conn, cursor = get_connection()
+        cursor.execute("SELECT * FROM artefacto WHERE Id = %s", (id_artefacto,))
+        data = cursor.fetchone()
+        conn.close()
+        return data
 
     @staticmethod
     def cambiar_estado(id_artefacto, nuevo_estado):

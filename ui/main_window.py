@@ -64,15 +64,13 @@ class ArregloApp:
         frame_der = ttk.Labelframe(panel, text="Artefactos y Arreglos", bootstyle="white", padding=10)
         panel.add(frame_der, weight=3)
 
-        columnas = ("tipo", "estado", "fecha", "detalle")
+        columnas = ("estado", "fecha", "detalle")
         self.tree_det = ttk.Treeview(frame_der, columns=columnas, show="headings", height=22)
 
-        self.tree_det.heading("tipo", text="Tipo", anchor="center")
         self.tree_det.heading("estado", text="Estado", anchor="center")
         self.tree_det.heading("fecha", text="Fecha", anchor="center")
         self.tree_det.heading("detalle", text="Detalle", anchor="center")
 
-        self.tree_det.column("tipo", anchor="center", width=150)
         self.tree_det.column("estado", anchor="center", width=120)
         self.tree_det.column("fecha", anchor="center", width=120)
         self.tree_det.column("detalle", anchor="center", width=400)
@@ -147,21 +145,30 @@ class ArregloApp:
             tag_estado = "listo" if (art["estado"] or "").lower() == "listo" else "arreglar"
             tag_fila = "evenrow" if i % 2 == 0 else "oddrow"
             self.tree_det.insert("", "end", iid=f"art_{art['Id']}",
-                                 values=("Artefacto", art["estado"], art["fecha"], art["detalle"]),
-                                 tags=(tag_estado, tag_fila))
+                     values=(art["estado"], art["fecha"], art["detalle"]),
+                     tags=(tag_estado, tag_fila))
 
     def on_double_click_detalle(self, _):
-        sel = self.tree_det.selection()
-        if not sel:
-            return
-        iid = sel[0]
-        if not iid.startswith("art_"):
-            return
-        id_artefacto = iid.split("_")[1]
-        artefactos = Artefacto.obtener_por_cliente(id_artefacto)
-        nuevo = "Listo" if (artefactos[0]["estado"] or "").lower() != "listo" else "Arreglar"
-        Artefacto.cambiar_estado(id_artefacto, nuevo)
-        self.mostrar_detalles_cliente(self.tree_clientes.selection()[0])
+       sel = self.tree_det.selection()
+       if not sel:
+        return
+
+       iid = sel[0]
+       if not iid.startswith("art_"):
+        return
+
+       id_artefacto = iid.split("_")[1]
+
+       artefacto = Artefacto.obtener_por_id(id_artefacto)
+       if not artefacto:
+        return
+
+       estado_actual = (artefacto["estado"] or "").lower()
+       nuevo_estado = "Listo" if estado_actual != "listo" else "Arreglar"
+
+       Artefacto.cambiar_estado(id_artefacto, nuevo_estado)
+       self.mostrar_detalles_cliente(self.tree_clientes.selection()[0])
+
 
     def abrir_popup_arreglo(self):
         sel_cliente = self.tree_clientes.selection()
