@@ -30,3 +30,11 @@ class Cliente:
         cursor.execute(DELETE_CLIENTE, (id_cliente,))
         conn.commit()
         conn.close()
+    
+    @staticmethod
+    def obtener_por_id(id_cliente):
+        conn, cursor = get_connection()
+        cursor.execute("SELECT * FROM cliente WHERE Id=%s", (id_cliente,))
+        data = cursor.fetchone()
+        conn.close()
+        return data

@@ -24,3 +24,16 @@ DELETE_ARTEFACTO = "DELETE FROM artefacto WHERE Id=%s"
 
 UPDATE_ESTADO_ARTEFACTO = "UPDATE artefacto SET estado=%s WHERE Id=%s"
 GET_ESTADO_ARTEFACTO = "SELECT estado FROM artefacto WHERE Id=%s"
+
+INSERT_BOLETA = """
+    INSERT INTO boleta (fecha, valor, detalle, `id.cliente`, `id.artefacto`)
+    VALUES (%s, %s, %s, %s, %s)
+"""
+
+GET_BOLETAS_BY_CLIENTE = """
+    SELECT * FROM boleta WHERE `id.cliente`=%s ORDER BY fecha DESC
+"""
+
+GET_BOLETA_BY_ARTEFACTO = """
+    SELECT * FROM boleta WHERE `id.artefacto`=%s
+"""
